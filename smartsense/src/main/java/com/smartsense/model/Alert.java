@@ -2,9 +2,11 @@ package com.smartsense.model;
 
 import java.time.LocalDateTime;
 
+import com.smartsense.model.enums.Severity;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.AllArgsConstructor;
@@ -27,7 +29,15 @@ public class Alert {
     @Id
     private String id;
 
-    // Add more params
+
+    private Severity severity;
+    
+    private String message;
+    
+    private LocalDateTime timestamp;
+
+    @DBRef
+    private Device device;
 
     @CreatedDate
     private LocalDateTime createdAt;
