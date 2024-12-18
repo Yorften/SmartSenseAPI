@@ -57,13 +57,13 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private String getJWTFromRequest(HttpServletRequest request) {
+    private String getJWTFromRequest(HttpServletRequest request) throws IOException {
         String bearerToken = request.getHeader("Authorization");
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7, bearerToken.length());
+        } else {
+            throw new IOException("Invalid token");
         }
-
-        return null;
     }
 
 }

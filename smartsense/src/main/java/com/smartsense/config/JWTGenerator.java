@@ -1,12 +1,15 @@
 package com.smartsense.config;
 
 import java.util.Date;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
 import com.smartsense.exceptions.InvalidDataException;
 
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -29,7 +32,16 @@ public class JWTGenerator {
         Date expiryDate = new Date(currentDate.getTime() + securityConstants.getJwtExpiration());
         MacAlgorithm alg = Jwts.SIG.HS512;
 
-        String token = Jwts.builder().subject(username).issuedAt(currentDate).expiration(expiryDate)
+        Set<String> roles = authentication.getAuthorities().stream()
+            .map(GrantedAuthority::getAuthority)
+            .collect(Collectors.toSet());
+
+        String token = Jwts.builder()
+                .subject(username)
+                .issuedAt(currentDate)
+                .expiration(expiryDate)
+                .claim("roles", roles)
+                .issuer("com.smartsense")
                 .signWith(securityConstants.getSigningKey(), alg).compact();
 
         return token;
