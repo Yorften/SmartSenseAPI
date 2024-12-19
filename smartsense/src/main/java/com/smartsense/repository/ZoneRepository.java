@@ -16,8 +16,8 @@ import com.smartsense.model.Zone;
 @Repository
 public interface ZoneRepository extends MongoRepository<Zone, String> {
 
-    Optional<Zone> findByTitle(String title);
+ //   Optional<Zone> findByTitle(String title);
 
-    Page<Zone> findByTitleContainingIgnoreCase(String title, Pageable pageable);
+ //   Page<Zone> findByTitleContainingIgnoreCase(String title, Pageable pageable);
 
 }

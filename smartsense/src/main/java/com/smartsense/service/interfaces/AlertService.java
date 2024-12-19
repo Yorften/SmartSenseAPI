@@ -16,13 +16,11 @@ public interface AlertService {
 
    AlertDTO getAlertById(String id, String... with);
 
-   Page<AlertDTO> getAllCategories(Pageable pageable, String title, String artist, Integer year);
-
-   Page<AlertDTO> getAllCategories(Pageable pageable, String title, String artist, Integer year, String... with);
-
    AlertDTO addAlert(AlertDTO Alert);
 
-   AlertDTO updateAlert(String AlertId, UpdateAlertDTO Alert);
+   Page<AlertDTO> getAllAlerts(Pageable pageable);
 
-   void deleteAlertById(String AlertId);
+   Page<AlertDTO> getAllAlerts(Pageable pageable, String... with);
+
+   Page<AlertDTO> searchAlerts(String query, Pageable pageable);
 }
