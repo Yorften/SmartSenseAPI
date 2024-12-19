@@ -86,7 +86,7 @@ public class DeviceMapper {
             builder.measurements(
                     measurements.stream()
                             .map(measurement -> MeasurementDTO.builder().value(measurement.getValue())
-                                    .timestamp(measurement.getTimestamp()).build())
+                                    .build())
                             .collect(Collectors.toList()));
         }
 

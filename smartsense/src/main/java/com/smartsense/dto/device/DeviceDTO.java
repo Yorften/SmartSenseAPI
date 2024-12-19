@@ -22,6 +22,8 @@ import lombok.Setter;
 @Builder
 public class DeviceDTO {
 
+    private String Id;
+
     private String name;
 
     private DeviceType type;

@@ -1,7 +1,9 @@
 package com.smartsense.util;
 
+import com.smartsense.model.Alert;
+import com.smartsense.model.Device;
 import com.smartsense.model.enums.Severity;
-import com.smartsense.dto.alert.AlertDTO;
+
 import java.time.LocalDateTime;
 
 public class AlertHelper {
@@ -28,7 +30,7 @@ public class AlertHelper {
    // private static final double HUM_NORMAL_HIGH = 65.0;
   //  private static final double HUM_NORMAL_LOW = 45.0;
 
-    public static AlertDTO evaluateTemperature(double temperature) {
+    public static Alert evaluateTemperature(double temperature, Device device) {
         Severity severity;
         String message;
 
@@ -51,14 +53,15 @@ public class AlertHelper {
 
 
 
-        return AlertDTO.builder()
+        return Alert.builder()
                 .severity(severity)
                 .message(message)
                 .timestamp(LocalDateTime.now())
+                .device(device)
                 .build();
     }
 
-    public static AlertDTO evaluateHumidity(double humidity) {
+    public static Alert evaluateHumidity(double humidity, Device device) {
         Severity severity;
         String message;
 
@@ -79,10 +82,11 @@ public class AlertHelper {
             message = "Humidité dans la plage optimale";
         }
 
-        return AlertDTO.builder()
+        return Alert.builder()
                 .severity(severity)
                 .message(message)
                 .timestamp(LocalDateTime.now())
+                .device(device)
                 .build();
     }
 }

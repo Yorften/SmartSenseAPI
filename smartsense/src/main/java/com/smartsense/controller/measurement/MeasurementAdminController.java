@@ -1,6 +1,7 @@
 package com.smartsense.controller.measurement;
 
 import com.smartsense.dto.measurement.MeasurementDTO;
+import com.smartsense.dto.measurement.MeasurementResponse;
 import com.smartsense.service.interfaces.MeasurementService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
  * Handles HTTP requests and routes them to the appropriate service methods.
  */
 @RestController // Marks this class as a RESTful controller.
-@RequestMapping("/api/admin/mesures")
+@RequestMapping("/api/admin/measurements")
 @RequiredArgsConstructor
 public class MeasurementAdminController {
 
@@ -36,7 +37,7 @@ public class MeasurementAdminController {
         return ResponseEntity.ok(measurementService.getMeasurementById(id, "device"));
     }
 
-    @GetMapping("/device/{deviceId}")
+    @GetMapping("/device/{deviceId}/measurements")
     public ResponseEntity<Page<MeasurementDTO>> getMeasurementsByDevice(
             @PathVariable String deviceId,
             @RequestParam(defaultValue = "0") int page,
@@ -46,7 +47,7 @@ public class MeasurementAdminController {
     }
 
     @PostMapping
-    public ResponseEntity<MeasurementDTO> createMeasurement(@RequestBody MeasurementDTO measurementDTO) {
+    public ResponseEntity<MeasurementResponse> createMeasurement(@RequestBody MeasurementDTO measurementDTO) {
         return ResponseEntity.ok(measurementService.saveMeasurement(measurementDTO));
     }
 
