@@ -67,8 +67,8 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ResponseEntity<ErrorResponse> handleBadCredentialsException(BadCredentialsException ex) {
         ErrorResponse errorResponse = new ErrorResponse(LocalDate.now(), "The identifications are wrong",
-                HttpStatus.UNAUTHORIZED.value(), null);
-        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
+                HttpStatus.BAD_REQUEST.value(), null);
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)
