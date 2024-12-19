@@ -1,5 +1,7 @@
 package com.smartsense.repository;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -15,5 +17,7 @@ import com.smartsense.model.Device;
 public interface DeviceRepository extends MongoRepository<Device, String> {
 
     Page<Device> findByZoneId(String albumId, Pageable pageable);
+
+    List<Device> findAllByZoneId(String zoneId);
 
 }

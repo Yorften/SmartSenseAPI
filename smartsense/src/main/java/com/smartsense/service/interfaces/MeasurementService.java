@@ -1,6 +1,8 @@
 package com.smartsense.service.interfaces;
 
 import com.smartsense.dto.measurement.MeasurementDTO;
+import com.smartsense.dto.measurement.MeasurementResponse;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -14,7 +16,7 @@ public interface MeasurementService {
    Page<MeasurementDTO> getAllMeasurements(Pageable pageable, String... with);
 
    // Enregistrer une nouvelle mesure
-   MeasurementDTO saveMeasurement(MeasurementDTO measurementDTO);
+   MeasurementResponse saveMeasurement(MeasurementDTO measurementDTO);
 
    // Exporter les mesures
    byte[] exportMeasurementsToCSV();

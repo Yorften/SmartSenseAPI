@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class AlertAdminController {
 
     private final AlertService alertService;
+    
     @GetMapping
     public ResponseEntity<Page<AlertDTO>> getAllAlerts(
             @RequestParam(defaultValue = "0") int page,

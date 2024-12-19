@@ -27,7 +27,6 @@ public class AlertDTO {
     private LocalDateTime timestamp;
   
     @NotNull(message = "Le device ne peut pas être nul")
-
     private DeviceDTO device;
 
 }

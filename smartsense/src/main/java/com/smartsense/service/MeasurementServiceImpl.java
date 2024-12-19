@@ -1,10 +1,15 @@
 package com.smartsense.service;
 
-import com.smartsense.dto.alert.AlertDTO;
 import com.smartsense.dto.measurement.MeasurementDTO;
+import com.smartsense.dto.measurement.MeasurementResponse;
+import com.smartsense.exceptions.InactiveDeviceException;
 import com.smartsense.exceptions.ResourceNotFoundException;
 import com.smartsense.mapper.MeasurementMapper;
+import com.smartsense.model.Alert;
+import com.smartsense.model.Device;
 import com.smartsense.model.Measurement;
+import com.smartsense.model.enums.Status;
+import com.smartsense.repository.AlertRepository;
 import com.smartsense.repository.MeasurementRepository;
 import com.smartsense.service.interfaces.MeasurementService;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +25,6 @@ import java.util.List;
 import static com.smartsense.util.AlertHelper.evaluateTemperature;
 import static com.smartsense.util.AlertHelper.evaluateHumidity;
 
-
 /**
  * Service implementation for Measurement entity.
  * Defines methods for CRUD operations and additional business logic.
@@ -30,10 +34,8 @@ import static com.smartsense.util.AlertHelper.evaluateHumidity;
 public class MeasurementServiceImpl implements MeasurementService {
 
     private final MeasurementRepository measurementRepository;
+    private final AlertRepository alertRepository;
     private final MeasurementMapper measurementMapper;
-
-    private final AlertServiceImpl alertService;
-
 
     @Override
     public Page<MeasurementDTO> getAllMeasurements(Pageable pageable, String... with) {
@@ -55,25 +57,28 @@ public class MeasurementServiceImpl implements MeasurementService {
         return measurementMapper.toDto(findMeasurementById(id), with);
     }
 
-
-
-
-
-
     @Override
-    public MeasurementDTO saveMeasurement(MeasurementDTO measurementDTO) {
+    public MeasurementResponse saveMeasurement(MeasurementDTO measurementDTO) {
         Measurement measurement = measurementMapper.toEntity(measurementDTO);
-        measurement = measurementRepository.save(measurement);
-        AlertDTO alertDTO;
-        // if condtion for Device
-        alertDTO  = evaluateTemperature(measurement.getValue());
+        Device device = measurement.getDevice();
+        Alert alert = null;
 
-         //else
-        alertDTO= evaluateHumidity(measurement.getValue());
+        if (device.getStatus() == Status.ACTIVE) {
+            switch (device.getType()) {
+                case TEMPERATURE:
+                    alert = evaluateTemperature(measurement.getValue(), device);
+                    break;
+                case HUMIDITY:
+                    alert = evaluateHumidity(measurement.getValue(), device);
+                    break;
+            }
+        } else {
+            throw new InactiveDeviceException("Inactive devices can't take measurements");
+        }
 
-        alertService.addAlert(alertDTO);
+        alert = alertRepository.save(alert);
 
-        return measurementMapper.toDto(measurement);
+        return measurementMapper.toDto(measurementRepository.save(measurement), alert);
     }
 
     @Override
@@ -84,16 +89,16 @@ public class MeasurementServiceImpl implements MeasurementService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
         // En-têtes CSV
-        writer.println("ID,Date et Heure,Valeur,Device ID");
+        writer.println("id,timestamp,value,device_id");
 
         // Données
         measurements.forEach(m -> {
             if (m.getRemovedAt() == null) {
                 writer.println(String.format("%s,%s,%.2f,%s",
-                    m.getId(),
-                    m.getTimestamp().format(formatter),
-                    m.getValue(),
-                    m.getDevice() != null ? m.getDevice().getName() : ""));
+                        m.getId(),
+                        m.getTimestamp().format(formatter),
+                        m.getValue(),
+                        m.getDevice() != null ? m.getDevice().getId() : ""));
             }
         });
 

@@ -21,7 +21,7 @@ public interface DeviceService {
    Page<DeviceDTO> getAllDevices(Pageable pageable, String search, String albumId, String... with);
 
    Page<DeviceDTO> getAllZoneDevices(Pageable pageable, String id);
-
+   
    DeviceDTO addDevice(DeviceDTO Device);
 
    public DeviceDTO updateDevice(String DeviceId, UpdateDeviceDTO Device);

@@ -1,8 +1,14 @@
 package com.smartsense.mapper;
 
 import com.smartsense.dto.measurement.MeasurementDTO;
+import com.smartsense.dto.measurement.MeasurementResponse;
 import com.smartsense.exceptions.InvalidDataException;
+import com.smartsense.exceptions.ResourceNotFoundException;
+import com.smartsense.model.Alert;
+import com.smartsense.model.Device;
 import com.smartsense.model.Measurement;
+import com.smartsense.repository.DeviceRepository;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -13,13 +19,14 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class MeasurementMapper {
-    
+
     private final DeviceMapper deviceMapper;
+    private final DeviceRepository deviceRepository;
     private final List<String> VALID_INCLUDES = Arrays.asList("device");
 
     public void verifyIncludes(String... with) throws InvalidDataException {
         List<String> includesList = Arrays.asList(with);
-        
+
         for (String include : includesList) {
             if (!include.isEmpty() && !VALID_INCLUDES.contains(include)) {
                 throw new InvalidDataException("Inclusion invalide: " + include);
@@ -27,52 +34,54 @@ public class MeasurementMapper {
         }
     }
 
-    public MeasurementDTO toDto(Measurement measurement) {
-        if (measurement == null) return null;
+    public Measurement toEntity(MeasurementDTO measurementDTO) {
+        Device device = deviceRepository.findById(measurementDTO.getDevice().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Device not found"));
 
-        return MeasurementDTO.builder()
-                //.id(measurement.getId())
-                .value(measurement.getValue())
-                .timestamp(measurement.getTimestamp())
-               // .device(deviceMapper.toDto(measurement.getDevice()))
+        return Measurement.builder()
+                .value(measurementDTO.getValue())
+                .device(device)
                 .build();
     }
 
-    public Measurement toEntity(MeasurementDTO dto) {
-        if (dto == null) return null;
+    public MeasurementResponse toDto(Measurement measurement) {
+        return MeasurementResponse.builder()
+                .value(measurement.getValue())
+                .timestamp(measurement.getTimestamp())
+                .device(deviceMapper.toDto(measurement.getDevice()))
+                .build();
+    }
 
-        return Measurement.builder()
-                .value(dto.getValue())
-                .timestamp(dto.getTimestamp())
-             //   .device(dto.getDevice() != null ? deviceMapper.toEntity(dto.getDevice()) : null)
+    public MeasurementResponse toDto(Measurement measurement, Alert alert) {
+        return MeasurementResponse.builder()
+                .value(measurement.getValue())
+                .severity(alert.getSeverity())
+                .message(alert.getMessage())
+                .timestamp(measurement.getTimestamp())
                 .build();
     }
 
     public MeasurementDTO toDto(Measurement measurement, String... with) {
-        if (measurement == null) return null;
 
         List<String> includesList = Arrays.asList(with);
 
         MeasurementDTO.MeasurementDTOBuilder builder = MeasurementDTO.builder()
-                .value(measurement.getValue())
-                .timestamp(measurement.getTimestamp());
-
+                .value(measurement.getValue());
+                
         if (includesList.contains("device") && measurement.getDevice() != null) {
-          //  builder.device(deviceMapper.toDto(measurement.getDevice()));
+            builder.device(deviceMapper.toDto(measurement.getDevice()));
         }
 
         return builder.build();
     }
 
-    public List<MeasurementDTO> toDtoList(List<Measurement> measurements) {
-        if (measurements == null) return null;
+    public List<MeasurementResponse> toDtoList(List<Measurement> measurements) {
         return measurements.stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
     }
 
     public List<MeasurementDTO> toDtoList(List<Measurement> measurements, String... with) {
-        if (measurements == null) return null;
         return measurements.stream()
                 .map(measurement -> toDto(measurement, with))
                 .collect(Collectors.toList());
