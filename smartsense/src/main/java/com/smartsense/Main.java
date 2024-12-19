@@ -14,12 +14,11 @@ public class Main {
         SpringApplication.run(Main.class, args);
     }
 
-    /*@Bean
+    @Bean
     CommandLineRunner init(DataSeeder dataSeeder) {
         return args -> {
             dataSeeder.seedDatabase(10); // Seed 10 records in each table
         };
     }
 
-     */
 }

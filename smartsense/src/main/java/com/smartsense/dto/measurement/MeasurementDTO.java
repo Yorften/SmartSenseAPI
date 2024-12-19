@@ -23,6 +23,7 @@ public class MeasurementDTO {
     
     @NotNull(message = "Le timestamp ne peut pas être nul")
     private LocalDateTime timestamp;
+    
     @NotNull(message = "Le device ne peut pas être nul")
     private DeviceDTO device;
 }

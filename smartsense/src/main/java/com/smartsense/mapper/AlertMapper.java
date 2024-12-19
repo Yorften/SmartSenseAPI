@@ -38,7 +38,6 @@ public class AlertMapper {
                 .severity(alertDTO.getSeverity())
                 .message(alertDTO.getMessage())
                 .timestamp(alertDTO.getTimestamp())
-                // .device(alertDTO.getDevice() == null ? null : deviceMapper.toEntity(alertDTO.getDevice()))
                 .build();
     }
 

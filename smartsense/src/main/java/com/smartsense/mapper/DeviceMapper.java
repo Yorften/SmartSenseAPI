@@ -6,9 +6,15 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
+import com.smartsense.dto.alert.AlertDTO;
 import com.smartsense.dto.device.DeviceDTO;
+import com.smartsense.dto.measurement.MeasurementDTO;
+import com.smartsense.dto.zone.ZoneDTO;
 import com.smartsense.exceptions.InvalidDataException;
+import com.smartsense.model.Alert;
 import com.smartsense.model.Device;
+import com.smartsense.model.Measurement;
+import com.smartsense.model.Zone;
 
 import lombok.RequiredArgsConstructor;
 
@@ -16,9 +22,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DeviceMapper {
 
-    private final AlertMapper alertMapper;
-    private final MeasurementMapper measurementMapper;
-    private final ZoneMapper zoneMapper;
     private final List<String> VALID_INCLUDES = Arrays.asList("measurements", "alerts", "zone");
 
     public void verifyIncludes(String... with) throws InvalidDataException {
@@ -32,12 +35,22 @@ public class DeviceMapper {
     }
 
     public Device toEntity(DeviceDTO deviceDTO) {
+        ZoneDTO zoneDTO = deviceDTO.getZone();
+        Zone zone = null;
+        if (zoneDTO != null) {
+            zone = Zone.builder()
+                    .name(zoneDTO.getName())
+                    .type(zoneDTO.getType())
+                    .location(zoneDTO.getLocation())
+                    .build();
+        }
+
         return Device.builder()
                 .name(deviceDTO.getName())
                 .type(deviceDTO.getType())
                 .status(deviceDTO.getStatus())
                 .lastCommunication(deviceDTO.getLastCommunication())
-                .zone(zoneMapper.toEntity(deviceDTO.getZone()))
+                .zone(zone)
                 .build();
     }
 
@@ -60,16 +73,29 @@ public class DeviceMapper {
                 .lastCommunication(device.getLastCommunication());
 
         if (includesList.contains("zone") && device.getZone() != null) {
-            builder.zone(zoneMapper.toDto(device.getZone()));
+            Zone zone = device.getZone();
+            builder.zone(ZoneDTO.builder()
+                    .name(zone.getName())
+                    .type(zone.getType())
+                    .location(zone.getLocation())
+                    .build());
         }
 
         if (includesList.contains("measurements") && !device.getMeasurements().isEmpty()) {
+            List<Measurement> measurements = device.getMeasurements();
             builder.measurements(
-                    device.getMeasurements().stream().map(measurementMapper::toDto).collect(Collectors.toList()));
+                    measurements.stream()
+                            .map(measurement -> MeasurementDTO.builder().value(measurement.getValue())
+                                    .timestamp(measurement.getTimestamp()).build())
+                            .collect(Collectors.toList()));
         }
 
         if (includesList.contains("alerts") && !device.getAlerts().isEmpty()) {
-            builder.alerts(device.getAlerts().stream().map(alertMapper::toDto).collect(Collectors.toList()));
+            List<Alert> alerts = device.getAlerts();
+            builder.alerts(alerts.stream()
+                    .map(alert -> AlertDTO.builder().severity(alert.getSeverity()).message(alert.getMessage())
+                            .timestamp(alert.getTimestamp()).build())
+                    .collect(Collectors.toList()));
         }
 
         return builder.build();
