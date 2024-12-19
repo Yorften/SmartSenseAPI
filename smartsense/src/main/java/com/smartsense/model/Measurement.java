@@ -28,6 +28,7 @@ public class Measurement {
     @Id
     private String id;
 
+    @CreatedDate
     private LocalDateTime timestamp;
     
     private Double value;

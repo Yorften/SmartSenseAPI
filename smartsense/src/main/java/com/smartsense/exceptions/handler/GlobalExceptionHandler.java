@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.smartsense.dto.errors.ErrorResponse;
 import com.smartsense.dto.errors.ValidationError;
+import com.smartsense.exceptions.InactiveDeviceException;
 import com.smartsense.exceptions.InvalidDataException;
 import com.smartsense.exceptions.ResourceNotFoundException;
 
@@ -33,6 +34,13 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidDataException.class)
     public ResponseEntity<ErrorResponse> handleInvalidDataException(InvalidDataException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(LocalDate.now(), ex.getMessage(),
+                HttpStatus.BAD_REQUEST.value(), null);
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InactiveDeviceException.class)
+    public ResponseEntity<ErrorResponse> handleInactiveDeviceException(InactiveDeviceException ex) {
         ErrorResponse errorResponse = new ErrorResponse(LocalDate.now(), ex.getMessage(),
                 HttpStatus.BAD_REQUEST.value(), null);
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);

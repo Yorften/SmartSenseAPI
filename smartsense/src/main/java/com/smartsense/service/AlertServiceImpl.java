@@ -1,66 +1,73 @@
 package com.smartsense.service;
 
+import com.smartsense.exceptions.InvalidDataException;
+import com.smartsense.exceptions.ResourceNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.smartsense.dto.alert.AlertDTO;
-import com.smartsense.dto.alert.UpdateAlertDTO;
 import com.smartsense.service.interfaces.AlertService;
+import com.smartsense.repository.AlertRepository;
+import com.smartsense.mapper.AlertMapper;
+import com.smartsense.model.Alert;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * Service implementation for Alert entity.
- * Defines methods for CRUD operations and additional business logic.
- */
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class AlertServiceImpl implements AlertService {
 
+    private final AlertRepository alertRepository;
+    private final AlertMapper alertMapper;
+
     @Override
     public AlertDTO getAlertById(String id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAlertById'");
+        return alertMapper.toDto(findAlertById(id));
     }
 
     @Override
-    public AlertDTO getAlertById(String id, String... with) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAlertById'");
-    }
-
-    @Override
-    public Page<AlertDTO> getAllCategories(Pageable pageable, String title, String artist, Integer year) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAllCategories'");
-    }
-
-    @Override
-    public Page<AlertDTO> getAllCategories(Pageable pageable, String title, String artist, Integer year,
-            String... with) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAllCategories'");
+    public AlertDTO getAlertById(String id, String... with) throws InvalidDataException {
+        alertMapper.verifyIncludes(with);
+        
+        Alert alert = alertRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Alert not found with id: " + id));
+            
+        return alertMapper.toDto(alert, with);
     }
 
     @Override
     public AlertDTO addAlert(AlertDTO Alert) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'addAlert'");
+         Alert alert=alertRepository.save( alertMapper.toEntity(Alert));
+
+         return alertMapper.toDto(alert,"device");
     }
 
     @Override
-    public AlertDTO updateAlert(String AlertId, UpdateAlertDTO Alert) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateAlert'");
+    public Page<AlertDTO> getAllAlerts(Pageable pageable) {
+        return alertRepository.findByRemovedAtNull(pageable)
+            .map(alertMapper::toDto);
     }
 
     @Override
-    public void deleteAlertById(String AlertId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteAlertById'");
+    public Page<AlertDTO> getAllAlerts(Pageable pageable, String... with) throws InvalidDataException {
+        alertMapper.verifyIncludes(with);
+        
+        return alertRepository.findByRemovedAtNull(pageable)
+            .map(alert -> alertMapper.toDto(alert, with));
+    }
+
+    @Override
+    public Page<AlertDTO> searchAlerts(String query, Pageable pageable) {
+        return alertRepository.findByMessageContainingIgnoreCaseAndRemovedAtNull(query, pageable)
+            .map(alertMapper::toDto);
+    }
+
+    private Alert findAlertById(String id) {
+        return alertRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Alert not found with id: " + id));
     }
 
 }

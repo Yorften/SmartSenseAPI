@@ -20,4 +20,5 @@ public class Main {
             dataSeeder.seedDatabase(10); // Seed 10 records in each table
         };
     }
+
 }

@@ -1,10 +1,10 @@
 package com.smartsense.service.interfaces;
 
+import com.smartsense.dto.measurement.MeasurementDTO;
+import com.smartsense.dto.measurement.MeasurementResponse;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-import com.smartsense.dto.measurement.MeasurementDTO;
-import com.smartsense.dto.measurement.UpdateMeasurementDTO;
 
 /**
  * Service interface for Measurement entity.
@@ -12,17 +12,14 @@ import com.smartsense.dto.measurement.UpdateMeasurementDTO;
  */
 public interface MeasurementService {
 
-   MeasurementDTO getMeasurementById(String id);
+   Page<MeasurementDTO> getMeasurementsByDevice(String deviceId, Pageable pageable, String... with);
+   Page<MeasurementDTO> getAllMeasurements(Pageable pageable, String... with);
+
+   // Enregistrer une nouvelle mesure
+   MeasurementResponse saveMeasurement(MeasurementDTO measurementDTO);
+
+   // Exporter les mesures
+   byte[] exportMeasurementsToCSV();
 
    MeasurementDTO getMeasurementById(String id, String... with);
-
-   Page<MeasurementDTO> getAllCategories(Pageable pageable, String title, String artist, Integer year);
-
-   Page<MeasurementDTO> getAllCategories(Pageable pageable, String title, String artist, Integer year, String... with);
-
-   MeasurementDTO addMeasurement(MeasurementDTO Measurement);
-
-   MeasurementDTO updateMeasurement(String MeasurementId, UpdateMeasurementDTO Measurement);
-
-   void deleteMeasurementById(String MeasurementId);
 }

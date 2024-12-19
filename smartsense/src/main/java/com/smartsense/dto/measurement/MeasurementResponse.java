@@ -1,28 +1,34 @@
 package com.smartsense.dto.measurement;
 
 import com.smartsense.dto.device.DeviceDTO;
+import com.smartsense.model.enums.Severity;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.NotNull;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class MeasurementDTO {
+public class MeasurementResponse {
     
     
-    @NotNull(message = "La valeur ne peut pas être nulle")
     private Double value;
         
-    @NotNull(message = "Le device ne peut pas être nul")
-    private DeviceDTO device;
+    private Severity severity;
 
+    private String message;
+
+    private LocalDateTime timestamp;
+
+    private DeviceDTO device;
     
 }
     

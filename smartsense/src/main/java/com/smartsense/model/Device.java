@@ -1,6 +1,8 @@
 package com.smartsense.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.data.annotation.Id;
 
@@ -10,6 +12,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.smartsense.model.enums.DeviceType;
 import com.smartsense.model.enums.Status;
 
 import lombok.AllArgsConstructor;
@@ -35,10 +38,11 @@ public class Device {
 
     private String name;
 
-    private String type;
+    private DeviceType type;
 
     private Status status;
 
+    @LastModifiedDate
     private LocalDateTime lastCommunication;
 
     @CreatedDate
@@ -51,4 +55,11 @@ public class Device {
 
     @DBRef
     private Zone zone;
+
+    @Builder.Default
+    private List<Measurement> measurements = new ArrayList<>();
+
+    @Builder.Default
+    private List<Alert> alerts = new ArrayList<>();
+
 }
