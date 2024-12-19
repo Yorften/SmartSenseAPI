@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 import com.github.javafaker.Faker;
 
 import com.smartsense.model.*;
+import com.smartsense.model.enums.DeviceType;
 import com.smartsense.model.enums.Status;
 import com.smartsense.repository.ZoneRepository;
 import com.smartsense.repository.DeviceRepository;
@@ -45,8 +46,8 @@ public class DataSeeder {
 	public void seedDatabase(int max) {
 		Faker faker = new Faker(new Locale("en-US"));
 
-		LocalDateTime start = LocalDateTime.of(2010, 1, 1, 0, 0, 0, 0);
-		LocalDateTime end = LocalDateTime.of(2030, 1, 1, 0, 0, 0, 0);
+		LocalDateTime start = LocalDateTime.of(2024, 10, 1, 0, 0, 0, 0);
+		LocalDateTime end = LocalDateTime.now();
 
 		Role role1 = Role.builder().name("ROLE_ADMIN").build();
 		Role role2 = Role.builder().name("ROLE_USER").build();
@@ -89,7 +90,7 @@ public class DataSeeder {
 			List<Device> devices = IntStream.range(0, max)
 					.mapToObj(i -> Device.builder()
 							.name(faker.lorem().word())
-							.type(faker.lorem().word())
+							.type(i == 0 ? DeviceType.TEMPERATURE : DeviceType.HUMIDITY)
 							.status(i == 0 ? Status.ACTIVE : Status.INACTIVE)
 							.lastCommunication(
 									faker.date().between(

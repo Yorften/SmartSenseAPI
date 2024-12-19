@@ -4,7 +4,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.smartsense.dto.alert.AlertDTO;
-import com.smartsense.dto.alert.UpdateAlertDTO;
 
 /**
  * Service interface for Alert entity.

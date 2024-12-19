@@ -16,9 +16,9 @@ public interface ZoneService {
 
    ZoneDTO getZoneById(String id, String... with);
 
-   Page<ZoneDTO> getAllCategories(Pageable pageable, String title, String artist, Integer year);
+   Page<ZoneDTO> getAllZones(Pageable pageable, String name, String type, String location);
 
-   Page<ZoneDTO> getAllCategories(Pageable pageable, String title, String artist, Integer year, String... with);
+   Page<ZoneDTO> getAllZones(Pageable pageable, String name, String type, String location, String... with);
 
    ZoneDTO addZone(ZoneDTO Zone);
 

@@ -37,7 +37,6 @@ public class UserMapper {
     }
 
     public User convertToEntity(UserDTO userDTO) {
-        log.info("User DTO: " + userDTO.toString());
         Set<Role> roles = roleService.getAllRolesByName(userDTO.getRoles());
 
         return User.builder()
@@ -80,6 +79,7 @@ public class UserMapper {
     }
 
     public List<UserDTO> convertToDTOList(List<User> users, String... with) {
+        verifyIncludes(with);
         return users.stream()
                 .map(user -> convertToDTO(user, with))
                 .collect(Collectors.toList());
