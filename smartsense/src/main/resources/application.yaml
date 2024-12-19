@@ -8,9 +8,12 @@ logging:
 security:
   jwt:
     secret: ${SPRING_JWT_TOKEN:mZfpLztVGV1ROkxXpXNRwFdoIUuJArRI4k+ouB+Hr4rfydy7hGfMY0+tnXJkmDuMgQkPQ1O6s5VUg5LoepC42g==}
-    expiration: ${SPRING_JWT_EXPIRATION:8640000}
+    expiration: ${SPRING_JWT_EXPIRATION:7200000}
 
 spring:
+  data:
+    mongodb:
+      auto-index-creation: true
   jackson:
     default-property-inclusion: NON_NULL
   profiles:

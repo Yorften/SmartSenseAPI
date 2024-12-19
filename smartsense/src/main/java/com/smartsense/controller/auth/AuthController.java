@@ -7,6 +7,8 @@ import com.smartsense.config.JWTGenerator;
 import com.smartsense.dto.auth.AuthResponse;
 import com.smartsense.dto.auth.LoginRequest;
 import com.smartsense.dto.user.UserDTO;
+import com.smartsense.model.TokenBlacklist;
+import com.smartsense.repository.TokenBlacklistRepository;
 import com.smartsense.service.interfaces.UserService;
 import com.smartsense.validation.UserValidationService;
 
@@ -25,6 +27,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 /**
  * REST controller for managing Zone entities by the admin.
@@ -38,6 +41,7 @@ public class AuthController {
 
     private final UserValidationService userValidationService;
     private final UserService userService;
+    private final TokenBlacklistRepository tokenBlacklistRepository;
     private final AuthenticationManager authenticationManager;
     private final JWTGenerator tokenGenerator;
     private final HttpServletRequest request;
@@ -85,9 +89,12 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<String> logout() {
+    public ResponseEntity<String> logout(@RequestHeader("Authorization") String token) {
 
-        SecurityContextHolder.clearContext();
+        String jwtToken = token.substring(7);
+
+        tokenBlacklistRepository.save(TokenBlacklist.builder().token(jwtToken).build());
+
         return new ResponseEntity<>("Logout successful", HttpStatus.OK);
 
     }

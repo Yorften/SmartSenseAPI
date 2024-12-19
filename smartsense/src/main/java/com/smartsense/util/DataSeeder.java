@@ -44,6 +44,15 @@ public class DataSeeder {
 	private MongoTemplate mongoTemplate;
 
 	public void seedDatabase(int max) {
+
+		mongoTemplate.createCollection(Device.class);
+		mongoTemplate.createCollection(Zone.class);
+		mongoTemplate.createCollection(Measurement.class);
+		mongoTemplate.createCollection(Alert.class);
+		mongoTemplate.createCollection(TokenBlacklist.class);
+		mongoTemplate.createCollection(User.class);
+		mongoTemplate.createCollection(Role.class);
+
 		Faker faker = new Faker(new Locale("en-US"));
 
 		LocalDateTime start = LocalDateTime.of(2024, 10, 1, 0, 0, 0, 0);
@@ -108,7 +117,6 @@ public class DataSeeder {
 		CompletableFuture.allOf(usersFuture, deviceFuture).join(); // Ensures both tasks are completed
 
 		long timeTaken = (Instant.now().toEpochMilli() - startInstant.toEpochMilli()) / 1000;
-
 		log.info("Seeding complete : time taken " + timeTaken + " s");
 
 	}
@@ -119,6 +127,7 @@ public class DataSeeder {
 		mongoTemplate.dropCollection(Zone.class);
 		mongoTemplate.dropCollection(Measurement.class);
 		mongoTemplate.dropCollection(Alert.class);
+		mongoTemplate.dropCollection(TokenBlacklist.class);
 		mongoTemplate.dropCollection(User.class);
 		mongoTemplate.dropCollection(Role.class);
 	}
