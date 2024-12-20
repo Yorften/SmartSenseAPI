@@ -27,27 +27,28 @@ public class DeviceServiceImpl implements DeviceService {
 
     @Override
     public DeviceDTO getDeviceById(String id) {
-        return getDeviceById(id, new String[0]);
+        log.info("Fetching device with id: {}", id);
+        Device device = deviceRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Device not found"));
+        return deviceMapper.toDto(device);
     }
 
     @Override
     public DeviceDTO getDeviceById(String id, String... with) {
-        log.info("Fetching device with id: {}", id);
+        log.info("Fetching device with id: {} and includes: {}", id, with);
+        deviceMapper.verifyIncludes(with);
+        
         Device device = deviceRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Device not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Device not found"));
+                
         return deviceMapper.toDto(device, with);
     }
 
-    @Override
-    public Page<DeviceDTO> getAllDevices(Pageable pageable, String search, String zoneId) {
-        return getAllDevices(pageable, search, zoneId, new String[0]);
-    }
+    // ... previous code ...
 
-    @Override
-    public Page<DeviceDTO> getAllDevices(Pageable pageable, String search, String zoneId, String... with) {
+    @Override   public Page<DeviceDTO> getAllDevices(Pageable pageable, String search, String zoneId) {
         log.info("Fetching all devices with search: {} and zoneId: {}", search, zoneId);
         Page<Device> devices;
-        
         if (search != null && !search.isEmpty() && zoneId != null && !zoneId.isEmpty()) {
             devices = deviceRepository.findByNameContainingAndZoneId(search, zoneId, pageable);
         } else if (search != null && !search.isEmpty()) {
@@ -57,9 +58,26 @@ public class DeviceServiceImpl implements DeviceService {
         } else {
             devices = deviceRepository.findAll(pageable);
         }
-        
+        return devices.map(deviceMapper::toDto);
+    }
+    @Override
+    public Page<DeviceDTO> getAllDevices(Pageable pageable, String search, String zoneId, String... with) {
+        log.info("Fetching all devices with search: {}, zoneId: {} and includes: {}", search, zoneId, with);
+        deviceMapper.verifyIncludes(with);
+
+        Page<Device> devices;
+        if (search != null && !search.isEmpty() && zoneId != null && !zoneId.isEmpty()) {
+            devices = deviceRepository.findByNameContainingAndZoneId(search, zoneId, pageable);
+        } else if (search != null && !search.isEmpty()) {
+            devices = deviceRepository.findByNameContaining(search, pageable);
+        } else if (zoneId != null && !zoneId.isEmpty()) {
+            devices = deviceRepository.findByZoneId(zoneId, pageable);
+        } else {
+            devices = deviceRepository.findAll(pageable);
+        }
         return devices.map(device -> deviceMapper.toDto(device, with));
     }
+// ... rest of the code ...
 
     @Override
     public Page<DeviceDTO> getAllZoneDevices(Pageable pageable, String zoneId) {
@@ -81,7 +99,7 @@ public class DeviceServiceImpl implements DeviceService {
         log.info("Updating device with id: {}", deviceId);
         Device existingDevice = deviceRepository.findById(deviceId)
                 .orElseThrow(() -> new ResourceNotFoundException("Device not found with id: " + deviceId));
-        
+
         if (deviceDTO.getName() != null) {
             existingDevice.setName(deviceDTO.getName());
         }
