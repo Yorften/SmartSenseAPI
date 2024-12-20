@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.smartsense.repository.TokenBlacklistRepository;
 import com.smartsense.service.CustomUserDetailsServiceImpl;
 
 import lombok.extern.slf4j.Slf4j;
@@ -23,13 +24,16 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
+    private TokenBlacklistRepository tokenBlacklistRepository;
     private JWTGenerator tokenGenerator;
     private CustomUserDetailsServiceImpl customUserDetailsServiceImpl;
 
     public JWTAuthenticationFilter(JWTGenerator tokenGenerator,
-            CustomUserDetailsServiceImpl customUserDetailsServiceImpl) {
+            CustomUserDetailsServiceImpl customUserDetailsServiceImpl,
+            TokenBlacklistRepository tokenBlacklistRepository) {
         this.tokenGenerator = tokenGenerator;
         this.customUserDetailsServiceImpl = customUserDetailsServiceImpl;
+        this.tokenBlacklistRepository = tokenBlacklistRepository;
     }
 
     @Override
@@ -37,6 +41,11 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         try {
             String token = getJWTFromRequest(request);
+
+            if (token != null && tokenBlacklistRepository.existsByToken(token)) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
+            }
 
             if (StringUtils.hasText(token) && tokenGenerator.validateJwtToken(token)) {
 
