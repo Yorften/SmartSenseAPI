@@ -1,5 +1,5 @@
 services:
-  musicapi:
+  smartsenseapi:
     image: anwar721/smartsense
     ports:
       - "8085:8085"  
@@ -14,24 +14,36 @@ services:
       - smartsense-network
 
   db:
-    image: mongodb:latest
-    container_name: mongodb-container
+    image: mongo:latest
+    container_name: mongodb
+    restart: always
+    networks:
+      - smartsense-network
+
     ports:
       - "27017:27017"
     volumes:
-      - mongo-data:/data/db
+      - mongodb_data:/data/db
+    command: ["mongod", "--noauth"]
+
+  mongo-express:
+    image: mongo-express:latest
+    container_name: mongo-express
+    restart: always
+    ports:
+        - "8081:8081"
+    environment:
+        ME_CONFIG_MONGODB_URL: mongodb://mongodb:27017/
+        ME_CONFIG_BASICAUTH: false
+    depends_on:
+        - db
     networks:
       - smartsense-network
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
-    command:
-      --bind_ip_all # Allows MongoDB to bind to all IPs inside the network
 
 volumes:
-  mongo-data:
-    driver: local
+  mongodb_data:
+    name: mongodb_data
 
 networks:
   smartsense-network:
-    driver: bridge
+    name: smartsense-network

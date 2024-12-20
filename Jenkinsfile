@@ -71,6 +71,8 @@ pipeline {
                                 -Dsonar.token=%SONAR_TOKEN% ^
                                 -Dsonar.java.binaries=target/classes ^
                                 -Dsonar.coverage.exclusions=**/dto/**,**/model/**,**/config/**
+                              -Dsonar.branch.name=main
+
                         '''
                     }
                 }
