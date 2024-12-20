@@ -45,8 +45,8 @@ public class DeviceServiceImpl implements DeviceService {
     @Override
     public Page<DeviceDTO> getAllZoneDevices(Pageable pageable, String zoneId) {
         log.info("Fetching all devices for zone: {}", zoneId);
-        Page<Device> devices = deviceRepository.findByZoneId(zoneId, pageable);
-        return devices.map(device -> deviceMapper.toDto(device));
+     return   deviceRepository.findByZoneId(zoneId, pageable).map(deviceMapper::toDto);
+    
     }
 
     @Override
