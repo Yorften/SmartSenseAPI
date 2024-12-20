@@ -13,12 +13,7 @@ import com.smartsense.dto.device.UpdateDeviceDTO;
 public interface DeviceService {
 
    DeviceDTO getDeviceById(String id);
-
-   DeviceDTO getDeviceById(String id, String... with);
-
    Page<DeviceDTO> getAllDevices(Pageable pageable, String search, String albumId);
-
-   Page<DeviceDTO> getAllDevices(Pageable pageable, String search, String albumId, String... with);
 
    Page<DeviceDTO> getAllZoneDevices(Pageable pageable, String id);
    

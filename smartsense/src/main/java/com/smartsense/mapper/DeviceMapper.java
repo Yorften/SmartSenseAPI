@@ -35,23 +35,28 @@ public class DeviceMapper {
     }
 
     public Device toEntity(DeviceDTO deviceDTO) {
-        ZoneDTO zoneDTO = deviceDTO.getZone();
-        Zone zone = null;
-        if (zoneDTO != null) {
-            zone = Zone.builder()
-                    .name(zoneDTO.getName())
-                    .type(zoneDTO.getType())
-                    .location(zoneDTO.getLocation())
-                    .build();
+        if (deviceDTO == null) {
+            return null;
         }
 
-        return Device.builder()
+        Device device = Device.builder()
                 .name(deviceDTO.getName())
                 .type(deviceDTO.getType())
                 .status(deviceDTO.getStatus())
                 .lastCommunication(deviceDTO.getLastCommunication())
-                .zone(zone)
                 .build();
+
+        if (deviceDTO.getZone() != null) {
+            Zone zone = Zone.builder()
+                    .id(deviceDTO.getZone().getId())
+                    .name(deviceDTO.getZone().getName())
+                    .type(deviceDTO.getZone().getType())
+                    .location(deviceDTO.getZone().getLocation())
+                    .build();
+            device.setZone(zone);
+        }
+
+        return device;
     }
 
     public DeviceDTO toDto(Device device) {

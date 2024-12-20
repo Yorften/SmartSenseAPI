@@ -25,7 +25,7 @@ import javax.validation.constraints.Size;
 @Builder
 public class DeviceDTO {
 
-    private String Id;
+    private String id;
 
     @NotNull(message = "Device name cannot be null")
     @Size(min = 3, max = 100, message = "Device name must be between 3 and 100 characters")

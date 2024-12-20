@@ -23,28 +23,29 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DeviceController {
 
-//    private final DeviceService deviceService;
-//
-//    @GetMapping("/{id}")
-//    public ResponseEntity<DeviceDTO> getDeviceById(
-//            @PathVariable String id,
-//            @RequestParam(required = false) String[] with) {
-//        return ResponseEntity.ok(deviceService.getDeviceById(id, with));
-//    }
-//
-//    @GetMapping
-//    public ResponseEntity<Page<DeviceDTO>> getAllDevices(
-//            Pageable pageable,
-//            @RequestParam(required = false) String search,
-//            @RequestParam(required = false) String zoneId,
-//            @RequestParam(required = false) String[] with) {
-//        return ResponseEntity.ok(deviceService.getAllDevices(pageable, search, zoneId, with));
-//    }
-//
-//    @GetMapping("/zone/{zoneId}")
-//    public ResponseEntity<Page<DeviceDTO>> getAllZoneDevices(
-//            Pageable pageable,
-//            @PathVariable String zoneId) {
-//        return ResponseEntity.ok(deviceService.getAllZoneDevices(pageable, zoneId));
-//    }
+    private final DeviceService deviceService;
+
+    @GetMapping("/{id}")
+    public ResponseEntity<DeviceDTO> getDeviceById(
+            @PathVariable String id,
+            @RequestParam(required = false) String[] with) {
+        return ResponseEntity.ok(deviceService.getDeviceById(id));
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<DeviceDTO>> getAllDevices(
+            Pageable pageable,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String zoneId,
+            @RequestParam(required = false) String[] with) {
+        return ResponseEntity.ok(deviceService.getAllDevices(pageable, search, zoneId));
+    }
+
+    @GetMapping("/zone/{zoneId}")
+    public ResponseEntity<Page<DeviceDTO>> getAllZoneDevices(
+            Pageable pageable,
+            @PathVariable String zoneId) {
+        return ResponseEntity.ok(deviceService.getAllZoneDevices(pageable, zoneId));
+    }
+
 }

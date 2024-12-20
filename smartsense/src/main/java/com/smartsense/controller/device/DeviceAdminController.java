@@ -33,41 +33,41 @@ public class DeviceAdminController {
 
     private final DeviceService deviceService;
 
-//    @GetMapping("/{id}")
-//    public ResponseEntity<DeviceDTO> getDeviceById(
-//            @PathVariable String id,
-//            @RequestParam(required = false) String[] with) {
-//        return ResponseEntity.ok(deviceService.getDeviceById(id, with));
-//    }
-//
-//    @GetMapping
-//    public ResponseEntity<Page<DeviceDTO>> getAllDevices(
-//            Pageable pageable,
-//            @RequestParam(required = false) String search,
-//            @RequestParam(required = false) String zoneId,
-//            @RequestParam(required = false) String[] with) {
-//        return ResponseEntity.ok(deviceService.getAllDevices(pageable, search, zoneId, with));
-//    }
-//
-//    @GetMapping("/zone/{zoneId}")
-//    public ResponseEntity<Page<DeviceDTO>> getAllZoneDevices(
-//            Pageable pageable,
-//            @PathVariable String zoneId) {
-//        return ResponseEntity.ok(deviceService.getAllZoneDevices(pageable, zoneId));
-//    }
-//
+        @GetMapping("/{id}")
+    public ResponseEntity<DeviceDTO> getDeviceById(
+            @PathVariable String id,
+            @RequestParam(required = false) String[] with) {
+        return ResponseEntity.ok(deviceService.getDeviceById(id));
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<DeviceDTO>> getAllDevices(
+            Pageable pageable,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String zoneId,
+            @RequestParam(required = false) String[] with) {
+        return ResponseEntity.ok(deviceService.getAllDevices(pageable, search, zoneId));
+    }
+
+    @GetMapping("/zone/{zoneId}")
+    public ResponseEntity<Page<DeviceDTO>> getAllZoneDevices(
+            Pageable pageable,
+            @PathVariable String zoneId) {
+        return ResponseEntity.ok(deviceService.getAllZoneDevices(pageable, zoneId));
+    }
+
     @PostMapping
     public ResponseEntity<DeviceDTO> addDevice(@Valid @RequestBody DeviceDTO deviceDTO) {
         return new ResponseEntity<>(deviceService.addDevice(deviceDTO), HttpStatus.CREATED);
     }
-//
-//    @PutMapping("/{id}")
-//    public ResponseEntity<DeviceDTO> updateDevice(
-//            @PathVariable String id,
-//            @RequestBody UpdateDeviceDTO deviceDTO) {
-//        return ResponseEntity.ok(deviceService.updateDevice(id, deviceDTO));
-//    }
-//
+
+    @PutMapping("/{id}")
+    public ResponseEntity<DeviceDTO> updateDevice(
+            @PathVariable String id,
+            @RequestBody UpdateDeviceDTO deviceDTO) {
+        return ResponseEntity.ok(deviceService.updateDevice(id, deviceDTO));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteDevice(@PathVariable String id) {
         deviceService.deleteDeviceById(id);
