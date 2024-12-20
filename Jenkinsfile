@@ -32,7 +32,7 @@ pipeline {
         stage('Docker Build') {
             steps {
                 unstash 'jar-artifact' 
-                bat "docker build -t ${DOCKER_HUB_REPO}:latest ."
+                bat "docker build -t %DOCKER_HUB_REPO%:latest ."
             }
         }
 
@@ -40,24 +40,27 @@ pipeline {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'docker-token', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                        sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
+                        bat "docker login -u %DOCKER_USERNAME% -p %DOCKER_PASSWORD%"
+                        bat "docker push %DOCKER_HUB_REPO%:latest"
                     }
-                    
-                    sh "docker push ${DOCKER_HUB_REPO}:latest"
                 }
             }
         }
 
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('SonarQube') {
-                    sh '''
-                        cd ./smartsense
-                        mvn sonar:sonar \
-                            -Dsonar.projectKey=smartsense \
-                            -Dsonar.java.binaries=target/classes \
-                            -Dsonar.coverage.exclusions=**/dto/**,**/model/**,**/config/**
-                    '''
+                withSonarQubeEnv('sq1') {
+                    withCredentials([string(credentialsId: 'sonar-qub', variable: 'SONAR_TOKEN')]) {
+                        bat '''
+                            cd ./smartsense
+                            mvn clean verify sonar:sonar ^
+                                -Dsonar.projectKey=smartsense ^
+                                -Dsonar.host.url=http://localhost:9000/ ^
+                                -Dsonar.token=%SONAR_TOKEN% ^
+                                -Dsonar.java.binaries=target/classes ^
+                                -Dsonar.coverage.exclusions=**/dto/**,**/model/**,**/config/**
+                        '''
+                    }
                 }
             }
         }
