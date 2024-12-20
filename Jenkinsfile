@@ -40,9 +40,21 @@ pipeline {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'docker-token', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                        bat "docker login -u %DOCKER_USERNAME% -p %DOCKER_PASSWORD%"
-                        bat "docker push %DOCKER_HUB_REPO%:latest"
+                        retry(3) {
+                            timeout(time: 10, unit: 'MINUTES') {
+                                bat """
+                                    docker login -u %DOCKER_USERNAME% -p %DOCKER_PASSWORD%
+                                    docker push %DOCKER_HUB_REPO%:latest || exit 1
+                                """
+                            }
+                        }
                     }
+                }
+            }
+            post {
+                failure {
+                    echo 'Docker push failed - checking Docker daemon status'
+                    bat 'docker info'
                 }
             }
         }
@@ -59,6 +71,8 @@ pipeline {
                                 -Dsonar.token=%SONAR_TOKEN% ^
                                 -Dsonar.java.binaries=target/classes ^
                                 -Dsonar.coverage.exclusions=**/dto/**,**/model/**,**/config/**
+                                -Dsonar.branch.name=main
+
                         '''
                     }
                 }
