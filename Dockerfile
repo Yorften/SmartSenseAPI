@@ -7,7 +7,7 @@ USER spring:spring
 
 WORKDIR /app
 
-COPY musique/target/*.jar app.jar
+COPY ./smartsense/target/*.jar app.jar
 
 EXPOSE 8086
 
