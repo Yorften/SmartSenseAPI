@@ -1,6 +1,6 @@
 services:
   musicapi:
-    image: yorften/smartsense
+    image: anwar721/smartsense
     ports:
       - "8085:8085"  
     environment:
