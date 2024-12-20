@@ -15,6 +15,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -22,16 +25,21 @@ import lombok.Setter;
 @Builder
 public class DeviceDTO {
 
-    private String Id;
+    private String id;
 
+    @NotNull(message = "Device name cannot be null")
+    @Size(min = 3, max = 100, message = "Device name must be between 3 and 100 characters")
     private String name;
 
+    @NotNull(message = "Device type cannot be null")
     private DeviceType type;
 
+    @NotNull(message = "Device status cannot be null")
     private Status status;
 
     private LocalDateTime lastCommunication;
 
+    @NotNull(message = "Zone cannot be null")
     private ZoneDTO zone;
 
     private List<MeasurementDTO> measurements;
