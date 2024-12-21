@@ -1,22 +1,32 @@
-# Device API
+# 🌡️ API de Gestion des Capteurs IoT
 
-A REST API for managing products, categories, and user roles in a secure and scalable e-commerce system, developed using Java and Spring Boot.
+Une API REST sécurisée pour la gestion des capteurs IoT, développée avec Spring Boot et intégrant les pratiques DevOps modernes.
 
-## Table of Contents
+## 📑 Table des matières
 
-- [Project Overview](#project-overview)
+- [Aperçu](#aperçu)
+- [Architecture](#architecture)
 - [Installation](#installation)
-- [Structure](#structure)
-- [Features](#features)
+- [API Endpoints](#api-endpoints)
+- [Configuration](#configuration)
+- [DevOps & CI/CD](#devops--cicd)
 - [Technologies](#technologies)
 
+## 🎯 Aperçu
 
-## Project Overview
+### Contexte
 
-**Context**:  
+Système de gestion des capteurs IoT permettant le suivi des mesures de température et d'humidité, avec gestion des alertes et zones, intégrant une authentification sécurisée et des rôles utilisateurs.
 
-The Device API provides functionality for managing musics, alubms, and users with role-based access control. It is designed for platforms where administrators manage the catalog of music and albums.
+### Entités Principales 📊
 
+- **Appareil** : Capteurs IoT (température/humidité)
+- **Mesure** : Données collectées
+- **Alerte** : Notifications basées sur les seuils
+- **Zone** : Regroupement logique des appareils
+- **Utilisateur** : Gestion des accès et rôles
+
+### Seuils d'Alerte 🚨
 
 **Objectives**:
 
@@ -41,19 +51,28 @@ The Device API provides functionality for managing musics, alubms, and users wit
 1. **Clone the repository:**
 
    ```sh
-   git clone https://github.com/Yorften/DeviceAPI
-   cd DeviceAPI/musicapi
+   git clone https://github.com/JavaAura/Barj_Badi_Lamtioui_Bouchehboune_Sprint_4_B3_SmartSenseAPI
+   cd ./smartsense
+
+   ```
 
 2. **Build the application:**
+
    ```sh
    mvn clean install
 
+   ```
+
 3. **Run the application:**
+
    ```sh
    mvn spring-boot:run
 
-3. **Access the application :**
-  - Default Port: http://localhost:8085
+   ```
+
+4. **Access the application :**
+
+- Default Port: http://localhost:8085
 
 ## Structure
 
@@ -65,37 +84,46 @@ The Device API provides functionality for managing musics, alubms, and users wit
 
 - **Service Layer**:  
   Contains business logic and orchestrates operations between the Controller and Repository layers.
-  
 - **Controller Layer**:  
   Implements REST endpoints for managing learners, trainers, classes, and training sessions using `@RestController` annotation.
-  
 - **Exceptions**:  
   Centralized exception handling for REST API responses.
 
-- **Utilities**:  
-  Common utility classes and methods.
+## 🔄 DevOps & CI/CD
 
-- **Tests**:  
-  Unit tests implemented with Mockito and JUnit.
+### Pipeline
 
-## Features
+1. **GitHub Actions** 🔍
 
-1. **User Management**:
-   - Role-based access (ADMIN, USER).
-   - Admins can manage users, including assigning roles.
+   - Tests unitaires
+   - Validation syntaxique
+   - Scan de vulnérabilités
 
-2. **Device Management**:
-   - List of musics with pagination, sorting, and filtering accessible by both ADMIN and USER roles.
-   - Admin-only access for creating, updating, and deleting products.
+2. **Jenkins** 🏗️
+   - Build
+   - Tests d'intégration
+   - Déploiement Docker
+   - Publication sur DockerHub
 
-3. **Zone Management**:
-   - Manage albums with hierarchical relationships.
-   - Admin-only access for creating, updating, and deleting categories.
+### Monitoring
+
+- Spring Actuator
+- Logging système
+- Métriques de performance
+
+## 💻 Technologies
+
+- **Backend** : Spring Boot, Spring Security, Spring Data
+- **Base de données** : MongoDB
+- **Tests** : JUnit, Mockito
+- **Documentation** : Swagger
+- **CI/CD** : Jenkins, GitHub Actions
+- **Conteneurisation** : Docker
+- **Qualité** : SonarLint
+- **Outils** : Lombok, DevTools
 
 4. **Security**:
    - JWT authentication using Spring Security and MongoDB.
-   - Prevents unauthorized access to protected resources.
-
 5. **Deployment**:
    - Docker: The application can be containerized using Docker for easy deployment.
    - Jenkins: CI/CD pipelines for automated builds, tests, and deployments.

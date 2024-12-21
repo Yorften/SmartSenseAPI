@@ -16,8 +16,9 @@ import com.smartsense.model.Device;
 @Repository
 public interface DeviceRepository extends MongoRepository<Device, String> {
 
-    Page<Device> findByZoneId(String albumId, Pageable pageable);
-
+    Page<Device> findByZoneId(String zoneId, Pageable pageable);
+    Page<Device> findByNameContainingAndZoneId(String name, String zoneId, Pageable pageable);
+    Page<Device> findByNameContaining(String name, Pageable pageable);
     List<Device> findAllByZoneId(String zoneId);
 
 }

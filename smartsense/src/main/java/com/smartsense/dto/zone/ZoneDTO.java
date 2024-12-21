@@ -19,7 +19,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class ZoneDTO {
-
+    private String id;  
+    
     @NotNull(message = "Zone name cannot be null")
     @Size(min = 3, max = 100, message = "Zone name must be between 3 and 100 characters")
     private String name;
